@@ -2,7 +2,6 @@
 title: 'Reproducible Research: Peer Assessment 1'
 author: "Csaba Sarkadi"
 date: "2016. január 9."
-output: html_document
 ---
 
 ## Loading and preprocessing the data
@@ -13,7 +12,8 @@ Show any code that is needed to
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```{r}
+
+```r
 ##
 ## Activity.csv should be in the R work directory
 ##
@@ -33,7 +33,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 2. Calculate and report the mean and median total number of steps taken per day
 
-```{r, echo=TRUE}
+
+```r
 ## sum
 agg_sum <- aggregate(fsub$steps,list(fsub$date),sum)
 ## plot sum
@@ -45,13 +46,29 @@ barplot(
     names.arg=agg_sum$Group.1,
     space=c(0)
 )
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+```r
 ## mean
 agg_mean <- aggregate(fsub$steps,list(fsub$date),mean)
 steps_mean <- mean(agg_sum$x)
 print(steps_mean)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 ## median
 steps_median <- median(agg_sum$x)
 print(steps_median)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
@@ -59,7 +76,8 @@ print(steps_median)
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r, echo=TRUE}
+
+```r
 ##
 fsub2 <- data.frame(fwithoutna$interval,fwithoutna$steps)
 names(fsub2) <- c("interval","steps")
@@ -75,6 +93,8 @@ plot(
 )
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
 ## Imputing missing values
 
 Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
@@ -87,11 +107,18 @@ Note that there are a number of days/intervals where there are missing values (c
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r, echo=TRUE}
+
+```r
 ## calculate NAs
 fisna <- f[is.na(f$steps),]
 length(fisna$steps)
+```
 
+```
+## [1] 2304
+```
+
+```r
 ## transform a new variable to contain the interval average step instead of the NA values
 ftrans <- f
 for( counter in 1:length(f$steps) ){
@@ -112,13 +139,28 @@ barplot(
     names.arg=agg_sumall$Group.1,
     space=c(0)
 )
+```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
+```r
 ## mean for all values
 steps_meanall <- mean(agg_sumall$x)
 print(steps_meanall)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 ## median for all values
 steps_medianall <- median(agg_sumall$x)
 print(steps_medianall)
+```
+
+```
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -130,7 +172,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was creating using simulated data:
 Your plot will look different from the one above because you will be using the activity monitor data. Note that the above plot was made using the lattice system but you can make the same version of the plot using any plotting system you choose.
 
-```{r,echo=TRUE}
+
+```r
 ## 
 fweekdays <- data.frame(ftrans$steps,ftrans$date, ftrans$interval, c(1:length(ftrans$steps)) )
 names(fweekdays )<-c("steps","date","interval","weekday")
@@ -173,3 +216,6 @@ plot(
     ylab="Steps"
 )
 ```
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+

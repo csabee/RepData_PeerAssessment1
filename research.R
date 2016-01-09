@@ -52,5 +52,64 @@ for( counter in 1:length(f$steps) ){
             agg_stepsinterval[agg_stepsinterval$Group.1 == f$interval[counter],]$x    
         ftrans$steps[counter] <- newsteps
     }
-    counter <- counter + 1
 }
+## without missing values
+agg_sumall <- aggregate(ftrans$steps,list(ftrans$date),sum)
+##plot it
+barplot(
+    height=agg_sumall$x,
+    main="Total Steps per Day",
+    xlab="Date",
+    ylab="Steps",
+    names.arg=agg_sumall$Group.1,
+    space=c(0)
+)
+
+## mean for all values
+steps_meanall <- mean(agg_sumall$x)
+print(steps_meanall)
+## median for all values
+steps_medianall <- median(agg_sumall$x)
+print(steps_medianall)
+
+## 
+fweekdays <- data.frame(ftrans$steps,ftrans$date, ftrans$interval, c(1:length(ftrans$steps)) )
+names(fweekdays )<-c("steps","date","interval","weekday")
+
+for( counter in 1:length(fweekdays$steps) ){
+    
+    currday <- weekdays(as.Date(fweekdays$date[counter]))
+    
+    if(currday == "szombat" || currday == "vasárnap" 
+       || currday == "saturday" || currday == "sunday"){
+        fweekdays$weekday[counter] <- 0
+    }else{
+        fweekdays$weekday[counter] <- 1
+    }
+}
+
+## filtered variables 
+fweek0 <- fweekdays[fweekdays$weekday == 0,]
+fweek1 <- fweekdays[fweekdays$weekday == 1,]
+## plot 2 beside each other
+par(mfrow=c(1,2))
+## weekdays
+agg_fweek1 <- aggregate(fweek1$steps,list(fweek1$interval),mean)
+plot(
+    x=agg_fweek1$Group.1,
+    y=agg_fweek1$x,
+    type="l",
+    main="Weekday steps by interval",
+    xlab="Interval",
+    ylab="Steps"
+)
+## weekend
+agg_fweek0 <- aggregate(fweek0$steps,list(fweek0$interval),mean)
+plot(
+    x=agg_fweek0$Group.1,
+    y=agg_fweek0$x,
+    type="l",
+    main="Weekend steps by interval",
+    xlab="Interval",
+    ylab="Steps"
+)
